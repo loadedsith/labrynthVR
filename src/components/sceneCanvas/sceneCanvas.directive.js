@@ -13,7 +13,6 @@ angular.module('labrynthVR')
 
       link: function(scope, element) {
 
-
         var camera = scope.camera;
         var renderer = new THREE.WebGLRenderer({
           canvas:element[0].childNodes[0],
@@ -63,7 +62,7 @@ angular.module('labrynthVR')
               scope.gravity.setFromQuaternion(gravity, 'XYZ');
               var max = 15;
               var offset = 0.0 * max;
-              scene.setGravity(new THREE.Vector3(
+              scope.scene.setGravity(new THREE.Vector3(
                 gravity.z * max - offset, //left and right
                 -30,
                 -1 * (gravity.x * max - offset)//Fore and back
@@ -112,7 +111,30 @@ angular.module('labrynthVR')
         }
 
         window.addEventListener('keydown', onkey, true);
+        function onWindowResize() {
+          effect.setSize(window.innerWidth, window.innerHeight);
+        }
+        window.addEventListener('resize', onWindowResize, false);
+        var mouse = new THREE.Vector2();
+        var raycaster = new THREE.Raycaster();
 
+        var onMouseMove = function() {
+
+          mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+          mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+          raycaster.setFromCamera(mouse, scope.scene.camera);
+          var intersects = raycaster.intersectObjects(scope.scene.clickable);//scene.objects?
+
+          if (intersects.length > 0) {
+
+            console.log('foundone');
+            //intersects[0].object.callback();
+          }
+
+        };
+
+        window.addEventListener('mousemove', onMouseMove, false);
       }
     };
   }]);
