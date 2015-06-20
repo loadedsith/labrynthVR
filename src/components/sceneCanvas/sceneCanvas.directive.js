@@ -81,12 +81,14 @@ angular.module('labrynthVR')
           requestAnimationFrame(render);
 
           if (manager && manager.isVRMode()) {
-            effect.render(scene, camera);
+            effect.render(scope.scene, scope.scene.camera);
           } else {
 
             renderer.render(scope.scene, scope.scene.camera);
           }
-
+          if (typeof scope.scene.renderLoop === 'function') {
+            scope.scene.renderLoop();
+          }
           scope.scene.simulate(); // run physics
         }
 
